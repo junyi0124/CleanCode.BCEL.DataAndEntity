@@ -20,11 +20,13 @@ namespace TestWebApplication
             _context = context;
         }
 
-        public IPagedList<Student> Student { get;set; }
+        public IPagedData<Student> Student { get;set; }
 
         public async Task OnGetAsync()
         {
-            Student = await _context.Where(false).ToPagedListAsync(1, 3);
+            Student = await _context.Where(false)
+                //.ToPagedListAsync(1, 3);
+                .ToPagedDataAsync(1, 3);
         }
     }
 }
