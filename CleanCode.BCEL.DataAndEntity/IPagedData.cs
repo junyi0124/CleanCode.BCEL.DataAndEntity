@@ -2,12 +2,12 @@
 
 namespace CleanCode.BCEL.DataAndEntity
 {
-    public interface IPagedData<T> : IReadOnlyList<T>
+    public interface IPagedData<out T> : IReadOnlyList<T>
     {
         /// <summary>
         /// Paged data collection.
         /// </summary>
-        List<T> Subset { get; }
+        IEnumerable<T> Subset { get; }
 
         /// <summary>
         /// Total number of objects contained within the superset.

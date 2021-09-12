@@ -26,9 +26,9 @@ namespace CleanCode.BCEL.DataAndEntity
 
         public int Count => Subset.Count();
 
-        public List<T> Subset { get; protected set; }
+        public IEnumerable<T> Subset { get; protected set; }
 
-        public T this[int index] => Subset[index];
+        public T this[int index] => Subset.ElementAt(index);
 
         private PagedMetadata() { }
         public PagedMetadata(List<T> subset, int totalCount, int pageSize, int pageNumber)

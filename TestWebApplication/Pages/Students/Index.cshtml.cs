@@ -13,20 +13,22 @@ namespace TestWebApplication
 {
     public class IndexModel : PageModel
     {
-        private readonly IGenericRepository<Student> _context;
+        private readonly IGenericRepository<Student> _repo;
 
         public IndexModel(IGenericRepository<Student> context)
         {
-            _context = context;
+            _repo = context;
         }
 
-        public IPagedData<Student> Student { get;set; }
+        public PagedModel<Student> Student { get;set; }
 
         public async Task OnGetAsync()
         {
-            Student = await _context.Where(false)
+            Student = await _repo.Where(false)
                 //.ToPagedListAsync(1, 3);
-                .ToPagedDataAsync(1, 3);
+                //.ToPagedDataAsync(1, 3);
+                .ToPagedDataAsync(1, 2)
+                .ContinueWith(x => x.Result.ToViewModel());
         }
     }
 }

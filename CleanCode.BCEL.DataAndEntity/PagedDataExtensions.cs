@@ -18,7 +18,7 @@ namespace CleanCode.BCEL.DataAndEntity
         /// <param name="pageSize"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<PagedMetadata<T>> ToPagedDataAsync<T>(this IQueryable<T> superset, 
+        public static async Task<IPagedData<T>> ToPagedDataAsync<T>(this IQueryable<T> superset, 
             int? pageNumber, int pageSize,
             CancellationToken cancellationToken)
         {
@@ -69,9 +69,33 @@ namespace CleanCode.BCEL.DataAndEntity
         /// <param name="pageNumber"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public static Task<PagedMetadata<T>> ToPagedDataAsync<T>(this IQueryable<T> superset, int pageNumber = 1, int pageSize = 10)
+        public static Task<IPagedData<T>> ToPagedDataAsync<T>(this IQueryable<T> superset, int pageNumber = 1, int pageSize = 10)
         {
             return superset.ToPagedDataAsync(pageNumber, pageSize, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="superset"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public static Task<IPagedData<T>> ToPagedDataAsync<T>(this IOrderedQueryable<T> superset, int pageNumber = 1, int pageSize = 10)
+        {
+            return superset.ToPagedDataAsync(pageNumber, pageSize, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pagedData"></param>
+        /// <returns></returns>
+        public static PagedModel<T> ToViewModel<T>(this IPagedData<T> pagedData)
+        {
+            return new PagedModel<T>(pagedData);
         }
     }
 }
