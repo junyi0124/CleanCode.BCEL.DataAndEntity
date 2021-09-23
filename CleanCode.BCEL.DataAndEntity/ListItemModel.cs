@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace CleanCode.BCEL.DataAndEntity
 {
-    public class ListItem
+    public class ListItemModel
     {
-        public string Text { get; set; }
-        public string Value { get; set; }
+        public string Text { get; protected set; }
+        public string Value { get; protected set; }
 
-        public ListItem(string text, string value)
+        public ListItemModel(string text, string value)
         {
             Text = text;
             Value = value;
