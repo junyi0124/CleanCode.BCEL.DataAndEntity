@@ -31,7 +31,7 @@ namespace CleanCode.BCEL.DataAndEntity
         public T this[int index] => Subset.ElementAt(index);
 
         private PagedMetadata() { }
-        public PagedMetadata(List<T> subset, int totalCount, int pageSize, int pageNumber)
+        public PagedMetadata(List<T> subset, int totalCount, int pageNumber, int pageSize)
         {
             this.Subset = subset;
             TotalItemCount = totalCount;

@@ -58,7 +58,7 @@ namespace CleanCode.BCEL.DataAndEntity
                 }
             }
 
-            return new PagedMetadata<T>(subset, pn, pageSize, totalCount);
+            return new PagedMetadata<T>(subset, totalCount, pn, pageSize);
         }
 
         /// <summary>
