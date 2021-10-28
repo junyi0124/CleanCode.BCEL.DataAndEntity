@@ -31,7 +31,7 @@ namespace TestWebApplication
             string connectionString = Configuration.GetConnectionString("SchoolContext");
             services.AddDbContext<SchoolContext>(opt => opt.UseSqlServer(connectionString));
 
-            services.AddScoped<IGenericRepository<Student>, StudentRepository>();
+            services.AddScoped<IGenericRepository<Student, int>, StudentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

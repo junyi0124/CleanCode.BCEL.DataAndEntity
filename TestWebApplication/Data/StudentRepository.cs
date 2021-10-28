@@ -9,7 +9,7 @@ using TestWebApplication.Models;
 
 namespace TestWebApplication.Data
 {
-    public class StudentRepository : GenericRepository<Student>
+    public class StudentRepository : GenericRepository<Student, int>
     {
         public StudentRepository(SchoolContext dbContext) : base(dbContext)
         {

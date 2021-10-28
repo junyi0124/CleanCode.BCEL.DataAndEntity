@@ -13,9 +13,9 @@ namespace TestWebApplication
 {
     public class IndexModel : PageModel
     {
-        private readonly IGenericRepository<Student> _repo;
+        private readonly IGenericRepository<Student, int> _repo;
 
-        public IndexModel(IGenericRepository<Student> context)
+        public IndexModel(IGenericRepository<Student, int> context)
         {
             _repo = context;
         }
