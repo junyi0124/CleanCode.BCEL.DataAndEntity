@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
-    <Version>1.2.1</Version>
+    <TargetFrameworks>netstandard2.1</TargetFrameworks>
+    <Version>1.3</Version>
     <Authors>junyi.zhang</Authors>
     <Description>generic repository and paged data extension</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -11,23 +11,11 @@
     <PackageTags>generic repository,paged data</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore">
-      <Version>3.1.18</Version>
+      <Version>5.0.11</Version>
     </PackageReference>
   </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore">
-      <Version>5.0.9</Version>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore">
-      <Version>5.0.9</Version>
-    </PackageReference>
-  </ItemGroup>
-
 
 </Project>

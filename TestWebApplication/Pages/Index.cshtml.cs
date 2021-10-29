@@ -19,7 +19,7 @@ namespace TestWebApplication.Pages
 
         public void OnGet()
         {
-
+            _logger.LogInformation("on get");
         }
     }
 }
