@@ -18,4 +18,9 @@
     </PackageReference>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanCode.BCEL.BaseEntity\CleanCode.BCEL.BaseEntity.csproj" />
+  </ItemGroup>
+
 </Project>

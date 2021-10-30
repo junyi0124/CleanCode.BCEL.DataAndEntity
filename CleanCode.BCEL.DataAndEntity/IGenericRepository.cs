@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using CleanCode.BCEL.BaseEntity;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CleanCode.BCEL.DataAndEntity
 {
-    public interface IGenericRepository<T, TId> where T : EntityBase<TId>, IAggregateRoot where TId : IComparable
+    public interface IGenericRepository<T, TId> where T : EntityBase<TId>, IAggregateRoot where TId : IEquatable<TId>
     {
         IQueryable<T> Where(bool tracking = false);
         ValueTask<T> FindAsync(TId id);

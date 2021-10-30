@@ -20,15 +20,15 @@ namespace TestWebApplication
             _repo = context;
         }
 
-        public PagedModel<Student> Student { get;set; }
+        public Paged<Student> Student { get;set; }
 
         public async Task OnGetAsync()
         {
-            Student = await _repo.Where(false)
+            Student = await _repo
                 //.ToPagedListAsync(1, 3);
                 //.ToPagedDataAsync(1, 3);
-                .ToPagedDataAsync(1, 2)
-                .ContinueWith(x => x.Result.ToViewModel());
+                //.ToPagedDataAsync(1, 2)
+                .GetPaged(null, 1, 2);
         }
     }
 }

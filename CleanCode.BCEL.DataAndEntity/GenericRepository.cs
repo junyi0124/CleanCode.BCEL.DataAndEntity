@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CleanCode.BCEL.BaseEntity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CleanCode.BCEL.DataAndEntity
 {
-    public abstract class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : EntityBase<TId>, IAggregateRoot where TId : IComparable
+    public abstract class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : EntityBase<TId>, IAggregateRoot where TId : IEquatable<TId>
     {
         private readonly DbContext _ctx;
 
@@ -79,7 +80,10 @@ namespace CleanCode.BCEL.DataAndEntity
                 return new Paged<T>(false, "pageIndex or pageSize invalid");
             }
 
-            var query = Where(false).Where(predicate);
+            var query = predicate==null 
+                ? Where(false) 
+                : Where(false).Where(predicate);
+
             int count = await query.CountAsync();
 
             if (count == 0)

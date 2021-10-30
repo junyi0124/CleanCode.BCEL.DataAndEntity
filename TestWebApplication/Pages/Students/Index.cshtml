@@ -10,7 +10,7 @@
 <div class="fieldset">
 	<div class="dd">PageNumber</div>
 	<div class="dt">
-		@Html.Raw(Model.Student.PageNumber)
+		@Html.Raw(Model.Student.PageIndex)
 	</div>
 	<div class="dd">PageSize</div>
 	<div class="dt">
@@ -21,12 +21,12 @@
 
 	<div class="dd">TotalItemCount</div>
 	<div class="dt">
-		@Html.Raw(Model.Student.TotalItemCount)
+		@Html.Raw(Model.Student.Count)
 	</div>
 
-	<div class="dd">Count</div>
+	<div class="dd">PageCount</div>
 	<div class="dt">
-		@Html.Raw(Model.Student.Count)
+		@Html.Raw(Model.Student.PageCount)
 	</div>
 
 
@@ -74,7 +74,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model.Student.Subset)
+		@foreach (var item in Model.Student.Data)
 		{
 			<tr>
 				<td>

@@ -1,13 +1,8 @@
-﻿using CleanCode.BCEL.DataAndEntity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CleanCode.BCEL.BaseEntity;
 
 namespace TestWebApplication.Models
 {
-    public class Student: EntityBase<int>, IAggregateRoot
+    public class Student : EntityBase<int>, IAggregateRoot
     {
         //public int Id { get; set; }
         public string Name { get; set; }
