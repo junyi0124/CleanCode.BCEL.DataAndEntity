@@ -80,8 +80,8 @@ namespace CleanCode.BCEL.DataAndEntity
                 return new Paged<T>(false, "pageIndex or pageSize invalid");
             }
 
-            var query = predicate==null 
-                ? Where(false) 
+            var query = predicate == null
+                ? Where(false)
                 : Where(false).Where(predicate);
 
             int count = await query.CountAsync();
