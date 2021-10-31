@@ -25,7 +25,7 @@ namespace CleanCode.BCEL.DataAndEntity
         EntityEntry<T> Update(T entity);
         EntityEntry<T> Delete(T entity);
 
-        Task<Paged<T>> GetPaged(Expression<Func<T, bool>> predicate, int pageIndex = 1, int pageSize = 10);
+        Task<Paged<T>> ToPaged(Expression<Func<T, bool>> predicate, int pageIndex = 1, int pageSize = 10);
         Task<int> CountAsync();
         //Task<int> CountAsync(Predicate<T> predicate);
         Task<int> CountAsync(Expression<Func<T, bool>> predicate);

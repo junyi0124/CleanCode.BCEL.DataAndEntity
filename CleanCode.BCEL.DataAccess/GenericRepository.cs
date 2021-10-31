@@ -49,7 +49,7 @@ namespace CleanCode.BCEL.DataAndEntity
 
 
 
-        public async Task<Paged<T>> GetPaged(Expression<Func<T, bool>> predicate, int pageIndex = 1, int pageSize = 10)
+        public async Task<Paged<T>> ToPaged(Expression<Func<T, bool>> predicate, int pageIndex = 1, int pageSize = 10)
         {
             //var result = new PagedModel<T>();
             //result.PageSize = pageSize;
