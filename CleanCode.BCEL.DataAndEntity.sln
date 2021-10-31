@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCode.BCEL.DataAccess",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCode.BCEL.BaseEntity", "CleanCode.BCEL.BaseEntity\CleanCode.BCEL.BaseEntity.csproj", "{8EB4716D-230E-47AB-A91A-E0061FC46ECD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContosoUniversityMvc", "ContosoUniversityMvc\ContosoUniversityMvc.csproj", "{D22762A7-4EA3-4BD2-832D-7C5C48FDCE25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8EB4716D-230E-47AB-A91A-E0061FC46ECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EB4716D-230E-47AB-A91A-E0061FC46ECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EB4716D-230E-47AB-A91A-E0061FC46ECD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D22762A7-4EA3-4BD2-832D-7C5C48FDCE25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D22762A7-4EA3-4BD2-832D-7C5C48FDCE25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D22762A7-4EA3-4BD2-832D-7C5C48FDCE25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D22762A7-4EA3-4BD2-832D-7C5C48FDCE25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
