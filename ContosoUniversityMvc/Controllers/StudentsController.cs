@@ -7,22 +7,56 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversityMvc.Data;
 using ContosoUniversityMvc.Models;
+using CleanCode.BCEL.DataAccess;
+using System.Linq.Expressions;
 
 namespace ContosoUniversityMvc.Controllers
 {
     public class StudentsController : Controller
     {
-        private readonly SchoolContext _context;
+        //private readonly SchoolContext _context;
 
-        public StudentsController(SchoolContext context)
+        //public StudentsController(SchoolContext context)
+        //{
+        //    _context = context;
+        //}
+
+        private readonly IGenericRepository<Student, int> _repo;
+        public StudentsController(IGenericRepository<Student, int> repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         // GET: Students
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageIndex, int pageSize = 3)
         {
-            return View(await _context.Students.ToListAsync());
+            //return View(await _context.Students.ToListAsync());
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
+
+            var students = _repo.Where();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                students = students.Where(x => x.LastName.Contains(searchString) ||
+                     x.FirstMidName.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.LastName);
+                    break;
+                case "Date":
+                    students = students.OrderBy(s => s.EnrollmentDate);
+                    break;
+                case "date_desc":
+                    students = students.OrderByDescending(s => s.EnrollmentDate);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.LastName);
+                    break;
+            }
+            return View(await PagedListHelper<Student>.ToPagedListAsync(students, pageIndex ?? 1, pageSize));
         }
 
         // GET: Students/Details/5
@@ -38,6 +72,7 @@ namespace ContosoUniversityMvc.Controllers
                     .ThenInclude(e => e.Course)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+            var student = await _repo.FirstOrDefaultAsync(x => x.Id == id);
             if (student == null)
             {
                 return NotFound();
@@ -82,6 +117,14 @@ namespace ContosoUniversityMvc.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
+        public async Task<IActionResult> Create([Bind("ID,LastName,FirstMidName,EnrollmentDate")] Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                _repo.Add(student);
+                await _repo.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
             return View(student);
         }
 
@@ -93,7 +136,7 @@ namespace ContosoUniversityMvc.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await _repo.FindAsync(id);
             if (student == null)
             {
                 return NotFound();
@@ -108,7 +151,7 @@ namespace ContosoUniversityMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
         {
-            if (id == null)
+            if (id != student.Id)
             {
                 return NotFound();
             }
@@ -121,18 +164,23 @@ namespace ContosoUniversityMvc.Controllers
             {
                 try
                 {
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    _repo.Update(student);
+                    await _repo.SaveChangesAsync();
                 }
                 catch (DbUpdateException /* ex */)
                 {
-                    //Log the error (uncomment ex variable name and write a log.)
-                    ModelState.AddModelError("", "Unable to save changes. " +
-                        "Try again, and if the problem persists, " +
-                        "see your system administrator.");
+                    if (!await StudentExists(student.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-            return View(studentToUpdate);
+            return View(student);
         }
 
         // GET: Students/Delete/5
@@ -143,9 +191,7 @@ namespace ContosoUniversityMvc.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var student = await _repo.FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
                 return NotFound();
@@ -186,10 +232,15 @@ namespace ContosoUniversityMvc.Controllers
 
 
         }
+            var student = await _repo.FindAsync(id);
+            _repo.Remove(student);
+            await _repo.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
-        private bool StudentExists(int id)
+        private Task<bool> StudentExists(int id)
         {
-            return _context.Students.Any(e => e.ID == id);
+            return _repo.AnyAsync(e => e.Id == id);
         }
     }
 }
