@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversityMvc.Data;
 using ContosoUniversityMvc.Models;
 using CleanCode.BCEL.DataAccess;
-using System.Linq.Expressions;
 
 namespace ContosoUniversityMvc.Controllers
 {
@@ -67,10 +65,10 @@ namespace ContosoUniversityMvc.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.AsNoTracking()
-                .Include(s => s.Enrollments)
-                    .ThenInclude(e => e.Course)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            //var student = await _context.Students.AsNoTracking()
+            //    .Include(s => s.Enrollments)
+            //        .ThenInclude(e => e.Course)
+            //    .FirstOrDefaultAsync(m => m.ID == id);
 
             var student = await _repo.FirstOrDefaultAsync(x => x.Id == id);
             if (student == null)
@@ -87,37 +85,38 @@ namespace ContosoUniversityMvc.Controllers
             return View();
         }
 
-        // POST: Students/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        //// POST: Students/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(
+        //    [Bind("ID,LastName,FirstMidName,EnrollmentDate")] Student student)
+        //{
+        //    //if (ModelState.IsValid)
+        //    //{
+        //    //    _context.Add(student);
+        //    //    await _context.SaveChangesAsync();
+        //    //    return RedirectToAction(nameof(Index));
+        //    //}
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            _context.Add(student);
+        //            await _context.SaveChangesAsync();
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //    }
+        //    catch (DbUpdateException /* ex */)
+        //    {
+        //        //Log the error (uncomment ex variable name and write a log.
+        //        ModelState.AddModelError("", "Unable to save changes. " +
+        //            "Try again, and if the problem persists " +
+        //            "see your system administrator.");
+        //    }
         public async Task<IActionResult> Create(
             [Bind("ID,LastName,FirstMidName,EnrollmentDate")] Student student)
-        {
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(student);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _context.Add(student);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            catch (DbUpdateException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.
-                ModelState.AddModelError("", "Unable to save changes. " +
-                    "Try again, and if the problem persists " +
-                    "see your system administrator.");
-            }
-        public async Task<IActionResult> Create([Bind("ID,LastName,FirstMidName,EnrollmentDate")] Student student)
         {
             if (ModelState.IsValid)
             {
@@ -151,11 +150,7 @@ namespace ContosoUniversityMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPost(int? id)
         {
-            if (id != student.Id)
-            {
-                return NotFound();
-            }
-            var studentToUpdate = await _context.Students.FirstOrDefaultAsync(s => s.ID == id);
+            var studentToUpdate = await _repo.FirstOrDefaultAsync(m => m.Id == id);
 
             if (await TryUpdateModelAsync<Student>(
                 studentToUpdate,
@@ -164,12 +159,12 @@ namespace ContosoUniversityMvc.Controllers
             {
                 try
                 {
-                    _repo.Update(student);
+                    _repo.Update(studentToUpdate);
                     await _repo.SaveChangesAsync();
                 }
                 catch (DbUpdateException /* ex */)
                 {
-                    if (!await StudentExists(student.Id))
+                    if (!await StudentExists(studentToUpdate.Id))
                     {
                         return NotFound();
                     }
@@ -180,7 +175,7 @@ namespace ContosoUniversityMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(studentToUpdate);
         }
 
         // GET: Students/Delete/5
@@ -212,26 +207,24 @@ namespace ContosoUniversityMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+        //    var student = await _context.Students.FindAsync(id);
+        //    if (student == null)
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-            try
-            {
-                _context.Students.Remove(student);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
-            }
-
-
-        }
+        //    try
+        //    {
+        //        _context.Students.Remove(student);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch (DbUpdateException /* ex */)
+        //    {
+        //        //Log the error (uncomment ex variable name and write a log.)
+        //        return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+        //    }
+        //}
             var student = await _repo.FindAsync(id);
             _repo.Remove(student);
             await _repo.SaveChangesAsync();
