@@ -48,8 +48,13 @@ namespace ContosoUniversityMvc.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
-            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID");
+            ViewData["DepartmentID"] = PopulateDepartmentSelectList(null);
             return View();
+        }
+
+		private SelectList PopulateDepartmentSelectList(int? departmentId)
+		{
+            return new SelectList(_context.Departments, "DepartmentID", "Name", departmentId);
         }
 
         // POST: Courses/Create
@@ -65,7 +70,8 @@ namespace ContosoUniversityMvc.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID", course.DepartmentID);
+            //ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID", course.DepartmentID);
+            ViewData["DepartmentID"] = PopulateDepartmentSelectList(course.DepartmentID);
             return View(course);
         }
 
@@ -82,7 +88,8 @@ namespace ContosoUniversityMvc.Controllers
             {
                 return NotFound();
             }
-            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID", course.DepartmentID);
+            //ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID", course.DepartmentID);
+            ViewData["DepartmentID"] = PopulateDepartmentSelectList(course.DepartmentID);
             return View(course);
         }
 
@@ -118,7 +125,8 @@ namespace ContosoUniversityMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID", course.DepartmentID);
+            //ViewData["DepartmentID"] = new SelectList(_context.Departments, "DepartmentID", "DepartmentID", course.DepartmentID);
+            ViewData["DepartmentID"] = PopulateDepartmentSelectList(course.DepartmentID);
             return View(course);
         }
 

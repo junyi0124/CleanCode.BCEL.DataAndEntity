@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CleanCode.BCEL.BaseEntity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace ContosoUniversityMvc.Models
 {
-	public class Student
+	public class Student: EntityBase<int>, IAggregateRoot
     {
-        public int ID { get; set; }
+        //public int ID { get; set; }
         
         [Required] 
         [StringLength(50)]

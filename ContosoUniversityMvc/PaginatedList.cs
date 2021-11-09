@@ -14,18 +14,12 @@ namespace ContosoUniversityMvc
 
         public bool HasPreviousPage
         {
-            get
-            {
-                return (PageIndex > 1);
-            }
+            get { return (PageIndex > 1); }
         }
 
         public bool HasNextPage
         {
-            get
-            {
-                return (PageIndex < TotalPages);
-            }
+            get { return (PageIndex < TotalPages); }
         }
 
 

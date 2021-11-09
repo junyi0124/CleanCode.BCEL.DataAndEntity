@@ -7,27 +7,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversityMvc.Data;
 using ContosoUniversityMvc.Models;
+using CleanCode.BCEL.DataAccess;
+using System.Linq.Expressions;
 
 namespace ContosoUniversityMvc.Controllers
 {
     public class StudentsController : Controller
     {
-        private readonly SchoolContext _context;
+        //private readonly SchoolContext _context;
 
-        public StudentsController(SchoolContext context)
+        //public StudentsController(SchoolContext context)
+        //{
+        //    _context = context;
+        //}
+
+        private readonly IGenericRepository<Student, int> _repo;
+        public StudentsController(IGenericRepository<Student, int> repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         // GET: Students
-        public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber, int pageSize=3)
+        public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageIndex, int pageSize = 3)
         {
             //return View(await _context.Students.ToListAsync());
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
             ViewData["CurrentFilter"] = searchString;
 
-            var students = _context.Students.AsNoTracking();
+            var students = _repo.Where();
             if (!string.IsNullOrEmpty(searchString))
             {
                 students = students.Where(x => x.LastName.Contains(searchString) ||
@@ -48,8 +56,7 @@ namespace ContosoUniversityMvc.Controllers
                     students = students.OrderBy(s => s.LastName);
                     break;
             }
-            //return View(await students.AsNoTracking().ToListAsync());
-            return View(await PaginatedList<Student>.CreateAsync(students.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(await PagedListHelper<Student>.ToPagedListAsync(students, pageIndex ?? 1, pageSize));
         }
 
         // GET: Students/Details/5
@@ -60,8 +67,7 @@ namespace ContosoUniversityMvc.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var student = await _repo.FirstOrDefaultAsync(x => x.Id == id);
             if (student == null)
             {
                 return NotFound();
@@ -85,8 +91,8 @@ namespace ContosoUniversityMvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(student);
-                await _context.SaveChangesAsync();
+                _repo.Add(student);
+                await _repo.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(student);
@@ -100,7 +106,7 @@ namespace ContosoUniversityMvc.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students.FindAsync(id);
+            var student = await _repo.FindAsync(id);
             if (student == null)
             {
                 return NotFound();
@@ -115,7 +121,7 @@ namespace ContosoUniversityMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,LastName,FirstMidName,EnrollmentDate")] Student student)
         {
-            if (id != student.ID)
+            if (id != student.Id)
             {
                 return NotFound();
             }
@@ -124,12 +130,12 @@ namespace ContosoUniversityMvc.Controllers
             {
                 try
                 {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
+                    _repo.Update(student);
+                    await _repo.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.ID))
+                    if (!await StudentExists(student.Id))
                     {
                         return NotFound();
                     }
@@ -151,8 +157,7 @@ namespace ContosoUniversityMvc.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Students
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var student = await _repo.FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
                 return NotFound();
@@ -166,15 +171,15 @@ namespace ContosoUniversityMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var student = await _context.Students.FindAsync(id);
-            _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
+            var student = await _repo.FindAsync(id);
+            _repo.Remove(student);
+            await _repo.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StudentExists(int id)
+        private Task<bool> StudentExists(int id)
         {
-            return _context.Students.Any(e => e.ID == id);
+            return _repo.AnyAsync(e => e.Id == id);
         }
     }
 }

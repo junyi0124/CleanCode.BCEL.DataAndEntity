@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CleanCode.BCEL.DataAndEntity
+namespace CleanCode.BCEL.DataAccess
 {
     public abstract class GenericRepository<T, TId> : IGenericRepository<T, TId> where T : EntityBase<TId>, IAggregateRoot where TId : IEquatable<TId>
     {
@@ -19,11 +19,13 @@ namespace CleanCode.BCEL.DataAndEntity
             _ctx = dbContext;
         }
 
+    #region commands
+
         public EntityEntry<T> Add(T entity)
         {
             return _ctx.Add(entity);
         }
-        public EntityEntry<T> Delete(T entity)
+        public EntityEntry<T> Remove(T entity)
         {
             return _ctx.Remove(entity);
         }
@@ -31,10 +33,12 @@ namespace CleanCode.BCEL.DataAndEntity
         {
             return _ctx.Update(entity);
         }
-        public virtual Task<int> SaveAsync()
+        public virtual Task<int> SaveChangesAsync()
         {
             return _ctx.SaveChangesAsync();
         }
+
+    #endregion
 
         public ValueTask<T> FindAsync(TId id)
         {
@@ -46,10 +50,13 @@ namespace CleanCode.BCEL.DataAndEntity
             return _ctx.FindAsync<T>(keyValues);
         }
 
+        public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return _ctx.Set<T>().FirstOrDefaultAsync(predicate);
+        }
 
 
-
-        public async Task<Paged<T>> ToPaged(Expression<Func<T, bool>> predicate, int pageIndex = 1, int pageSize = 10)
+        public async Task<Paged<T>> ToPagedListAsync(Expression<Func<T, bool>> predicate, int pageIndex = 1, int pageSize = 10)
         {
             //var result = new PagedModel<T>();
             //result.PageSize = pageSize;
@@ -77,7 +84,7 @@ namespace CleanCode.BCEL.DataAndEntity
 
             if (CheckPageParameters(pageIndex, pageSize))
             {
-                return new Paged<T>(false, "pageIndex or pageSize invalid");
+                return new Paged<T>("pageIndex or pageSize invalid");
             }
 
             var query = predicate == null
@@ -88,7 +95,7 @@ namespace CleanCode.BCEL.DataAndEntity
 
             if (count == 0)
             {
-                return new Paged<T>(false, "empty result");
+                return new Paged<T>("empty result");
             }
 
             var data = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize)
@@ -130,6 +137,16 @@ namespace CleanCode.BCEL.DataAndEntity
             return tracking
                 ? _ctx.Set<T>().AsTracking()
                 : _ctx.Set<T>().AsNoTracking();
+        }
+
+        public Task<bool> AnyAsync()
+        {
+            return _ctx.Set<T>().AnyAsync();
+        }
+
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return _ctx.Set<T>().AnyAsync(predicate);   
         }
     }
 }
